@@ -4,9 +4,11 @@ These are a collection of scripts to make it easier to stake NEAR from the comma
 
 ## __NOTE__: This only works if your account is an HD Path on a ledger
 
+## __NOTE__: For your safety you should read each script to understand what they are doing (they are very simple).
+
 ### Before you start
 
-Make sure that your ledger is unlocked and that the near application is open (also note you need to approve "Pending Ledger review").
+Make sure that your ledger is unlocked and that the NEAR application is open (also note you need to approve "Pending Ledger review").
 
 ### Select
 
