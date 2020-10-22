@@ -1,0 +1,10 @@
+{
+  "name": "near-staking",
+  "version": "1.0.0",
+  "description": "Tools for checking staking contracts",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "near-api-js": "^0.31.0"
+  }
+}

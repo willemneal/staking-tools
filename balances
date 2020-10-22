@@ -1,0 +1,20 @@
+#!/usr/bin/env node
+let nearAPI = require('near-api-js');
+const util = require('util');
+const execFile = util.promisify(require('child_process').execFile);
+
+let accounts = require("./accounts.json")
+
+async function check(account) {
+  const { stdout } = await execFile("./check.sh", [`${account.poolID}.poolv1.near`, `${account.lockupID}.lockup.near`])
+  return stdout.split("\n")[1].slice(1,-1);
+}
+
+async function main() {
+  for (let account of accounts) {
+    let balance = nearAPI.utils.format.formatNearAmount((await check(account))).toString();
+    console.log(`${account.poolID}: ${balance}`);
+  }
+}
+
+main()

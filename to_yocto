@@ -1,0 +1,14 @@
+#!/usr/bin/env node
+
+let assert = require('assert');
+let nearAPI = require('near-api-js');
+if (process.argv.length != 3) {
+  console.error("Wrong number of arguments\nUSAGE: node ./to_yocto.js {NEAR_AMOUNT}");
+  process.exit(1);
+}
+let NearAmount = process.argv[2];
+if (isNaN(NearAmount)) {
+  console.error("Argument must be a number");
+  process.exit(1);
+}
+console.log(nearAPI.utils.format.parseNearAmount(NearAmount));
