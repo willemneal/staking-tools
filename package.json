@@ -5,6 +5,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "bn": "^1.0.5",
     "near-api-js": "^0.31.0"
   }
 }

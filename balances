@@ -1,9 +1,12 @@
 #!/usr/bin/env node
 let nearAPI = require('near-api-js');
+let toNear = nearAPI.utils.format.formatNearAmount;
+let toYocto = nearAPI.utils.format.parseNearAmount;
 const util = require('util');
+const BN = require('bn').BigInteger;
 const execFile = util.promisify(require('child_process').execFile);
 
-let accounts = require("./accounts.json")
+let accounts = require("./accounts.json");
 
 async function check(account) {
   const { stdout } = await execFile("./check.sh", [`${account.poolID}.poolv1.near`, `${account.lockupID}.lockup.near`])
@@ -11,10 +14,17 @@ async function check(account) {
 }
 
 async function main() {
+  diffs = new BN("0");
   for (let account of accounts) {
-    let balance = nearAPI.utils.format.formatNearAmount((await check(account))).toString();
-    console.log(`${account.poolID}: ${balance}`);
+    let amount = (await check(account));
+    let current = new BN(amount);
+    let initial = new BN(toYocto(account.initial).toString());
+    let diff = current.subtract(initial);
+    diffs = diffs.add(diff);
+    let balance = toNear(amount).toString();
+    console.log(`${account.poolID}: ${balance} Net: ${toNear(diff.toString())}`);
   }
+  console.log(`\nTotal: ${toNear(diffs.toString())}`);
 }
 
 main()
