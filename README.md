@@ -70,7 +70,8 @@ e.g. for `123abc.lockup.near` and `YOUR_CHOICE.poolv1.near`:
 [
   {
     "poolID": "poolPrefix",
-    "lockupID": "lockupPrefix"
+    "lockupID": "lockupPrefix",
+    "initial": "100"
   }
 ]
 ```
