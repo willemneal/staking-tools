@@ -5,11 +5,17 @@ let toYocto = nearAPI.utils.format.parseNearAmount;
 const util = require('util');
 const BN = require('bn').BigInteger;
 const execFile = util.promisify(require('child_process').execFile);
+const path = require("path");
 
-let accounts = require("./accounts.json");
+function here(s) {
+	return path.join(__dirname, s)
+}
+
+
+let accounts = require(here("accounts.json"));
 
 async function check(account) {
-  const { stdout } = await execFile("./check.sh", [`${account.poolID}.poolv1.near`, `${account.lockupID}.lockup.near`])
+  const { stdout } = await execFile(here("check.sh"), [`${account.poolID}.poolv1.near`, `${account.lockupID}.lockup.near`])
   return stdout.split("\n")[1].slice(1,-1);
 }
 
