@@ -6,6 +6,7 @@
   "license": "MIT",
   "dependencies": {
     "bn": "^1.0.5",
+    "coingecko-api": "^1.0.10",
     "near-api-js": "^0.31.0"
   }
 }

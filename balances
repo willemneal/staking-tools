@@ -6,6 +6,17 @@ const util = require('util');
 const BN = require('bn').BigInteger;
 const execFile = util.promisify(require('child_process').execFile);
 const path = require("path");
+//1. Import coingecko-api
+const CoinGecko = require('coingecko-api');
+
+//2. Initiate the CoinGecko API Client
+const CoinGeckoClient = new CoinGecko();
+
+//3. Make calls
+var getNearPrice = async() => {
+  let data = await CoinGeckoClient.simple.price({"ids": "near"});
+  return data.data.near.usd;
+};
 
 function here(s) {
 	return path.join(__dirname, s)
@@ -19,18 +30,41 @@ async function check(account) {
   return stdout.split("\n")[1].slice(1,-1);
 }
 
+// function toNear(bignum) {
+//   return parseInt(toNearString(bignum.toString()));
+// }
+
+function mul(str, n) {
+  let num = parseFloat(str.replace(",",""))
+  return (num * n).toLocaleString('en-US');
+}
+
+function prettify(strNum) {
+  return parseFloat(strNum.replace(",","")).toLocaleString('en-US');
+}
+
 async function main() {
-  diffs = new BN("0");
+  let diffs = new BN("0");
+  let totals = new BN("0");
+  let price = await getNearPrice();
+  console.log(`Current price for NEAR: $${price}`)
   for (let account of accounts) {
     let amount = (await check(account));
     let current = new BN(amount);
+    totals = totals.add(current);
     let initial = new BN(toYocto(account.initial).toString());
     let diff = current.subtract(initial);
     diffs = diffs.add(diff);
-    let balance = toNear(amount).toString();
-    console.log(`${account.poolID}: ${balance} Net: ${toNear(diff.toString())}`);
+    let balance = prettify(toNear(amount));
+    let nearDiff = toNear(diff.toString());
+    let buffer = account.poolID.length <= 6 ? "\t": ""
+    console.log(`${account.poolID}:${buffer}\tⓃ ${balance}\tNet: Ⓝ ${prettify(nearDiff)} ($${mul(nearDiff, price)})`);
   }
-  console.log(`\nTotal: ${toNear(diffs.toString())}`);
+  let delta = toNear(diffs.toString());
+  let total = toNear(totals.toString());
+  console.log(`\nStaking:\tⓃ ${prettify(delta)} ($${mul(delta, price)})`);
+  console.log(`Total:\t\tⓃ ${prettify(total)} ($${mul(total, price)})`)
 }
 
 main()
+
